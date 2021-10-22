@@ -16,12 +16,11 @@ namespace TelegramBots
 
         static void Main(string[] args)
         {
-            Task.Run(() => StartBot());
-
-            var command = Console.ReadLine();
+            StartBot().GetAwaiter().GetResult();
+            Console.ReadLine();
         }
 
-        private static async void StartBot()
+        private static async Task StartBot()
         {
             IConfigurationRoot _configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false).Build();
 
