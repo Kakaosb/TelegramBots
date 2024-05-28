@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -16,8 +17,49 @@ namespace TelegramBots
 
         static void Main(string[] args)
         {
-            StartBot().GetAwaiter().GetResult();
+            //StartBot().GetAwaiter().GetResult();
+            some().GetAwaiter().GetResult();
             Console.ReadLine();
+        }
+
+        private async static Task some() 
+        {
+            try
+            {
+                using var client = new WTelegram.Client();
+                var myself = await client.LoginUserIfNeeded();
+                Console.WriteLine($"We are logged-in as {myself} (id {myself.id})");
+
+
+                //var chats = await client.Messages_GetAllChats();
+
+                //Console.WriteLine("This user has joined the following:");
+                //foreach (var (id, chat) in chats.chats)
+                //    if (chat.IsActive)
+                //        Console.WriteLine($"{id,10}: {chat}");
+                //Console.Write("Type a chat ID to send a message: ");
+                //long chatId = long.Parse(Console.ReadLine());
+                //var target = chats.chats[chatId];
+                //Console.WriteLine($"Sending a message in chat {chatId}: {target.Title}");
+                //await client.SendMessageAsync(target, "Hello, World");
+
+                var dialogs = await client.Messages_GetAllDialogs();
+            
+                var chats = dialogs.users;
+                chats.ToList().ForEach(el=> {
+                   // Console.WriteLine($"{el.Key} {el.Value} ");
+                
+                });
+                Console.Write("Type a chat ID to send a message: ");
+                long chatId = long.Parse(Console.ReadLine());
+                var target = dialogs.users[chatId];
+                Console.WriteLine($"Sending a message in chat {chatId}: {target.username}");
+                await client.SendMessageAsync(target, "здарова, уёбки");
+
+            }
+            catch (Exception ex) {
+                var a = ex.Message;
+            }
         }
 
         private static async Task StartBot()
